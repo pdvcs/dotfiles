@@ -1,2 +1,4 @@
-# dotfiles
-My dotfiles
+# My dotfiles
+
+vim, bash, and more
+
