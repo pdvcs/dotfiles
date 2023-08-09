@@ -1,9 +1,7 @@
 " .vimrc for vim 9+
-
-let g:hasplugins=0
-
 " get vim-plug from: https://github.com/junegunn/vim-plug
-try
+
+if !has("win32unix")
     call plug#begin('~/vimfiles/plugged')
         Plug 'preservim/nerdtree'
         Plug 'whatyouhide/vim-gotham'
@@ -12,9 +10,7 @@ try
         Plug 'vim-airline/vim-airline-themes'
     call plug#end()
     nnoremap <C-t> :NERDTreeToggle<CR>
-    let g:hasplugins=1
-catch
-endtry
+endif
 
 set nocompatible
 source $VIMRUNTIME/mswin.vim
@@ -37,18 +33,19 @@ set laststatus=2        " always show a status line
 set viminfo='20,\"50    " read/write a .viminfo file, don't store more
                         " than 50 lines of registers
 set cursorline          " highlight line the text cursor is on
-
 set backup
-if !isdirectory("~/vimfiles/backups")
-    if g:hasplugins == 1
-        silent! execute "!mkdir " . expand("$USERPROFILE") . "\\vimfiles\\backups"
-    else
-        " vim in git bash on windows
-        silent! execute "!mkdir -p " . expand("$HOME") . "/vimfiles/backups"
+
+if has("win32") || has("win32unix")
+    if !isdirectory("~/vimfiles/backups")
+        if has("win32")
+            silent! execute "!mkdir " . expand("$USERPROFILE") . "\\vimfiles\\backups"
+        elseif has("win32unix")
+            silent! execute "!mkdir -p " . expand("$HOME") . "/vimfiles/backups"
+        endif
     endif
 endif
 set backupdir=~/vimfiles/backups
-set noswapfile          " no swap files
+set noswapfile
 
 set vb
 set autoindent
@@ -103,13 +100,12 @@ if has("gui_running")
         set guifont=Monospace\ 12
     endif
 else
-    if g:hasplugins == 1
+    if has("win32")
         set termguicolors
         colorscheme dracula
-    else
+    elseif has("win32unix")
         " useful for the vim in Windows `git bash`
         set termguicolors
         colorscheme slate
     endif
 endif
-
